@@ -12,11 +12,14 @@ def index():
 
 @app.route('/home')
 def home():
+
   return render_template("home.html")
 
 @app.route('/dashboard')
 def dashboard():
-  return "yeetboard"
+  # Call the firebase database and get all the user info
+  user = "Andrew"
+  return render_template("dashboard.html", user=user)
 
 # For registering a user
 @app.route('/user', methods=['POST'])
