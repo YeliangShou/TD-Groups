@@ -24,17 +24,22 @@ def create_user():
   print(request.get_json())
   return "got user"
 
+# Assigning a user to a new group
+@app.route('/user/group', methods=['POST'])
+def assign_user_to_group():
+  print(request.get_json())
+  return "Assigning user to group"
+
 # Registering a new group
 @app.route('/group', methods=['POST'])
 def create_group():
   print(request.get_json())
   return "Creating group"
 
-# Assigning a user to a new group
-@app.route('/group', methods=['POST'])
-def assign_user_to_group():
-  print(request.get_json())
-  return "Assigning user to group"
+# Creating group categories
+@app.route('/group/category', methods=['POST'])
+def group_category():
+  pass
 
 
 if __name__ == '__main__':
