@@ -1,8 +1,28 @@
 from flask import Flask, render_template, request
 from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+import pyrebase 
 import json
 from groups import *
 
+# Use the application default credentials
+cred = credentials.ApplicationDefault()
+firebase_admin.initialize_app(cred, {
+  'projectId': u"td-groups",
+})
+
+db = firestore.client()
+
+config = {
+  "apiKey": "AIzaSyBST-3U14ztUoOfIADZ00hfl3vFlW-TN8Q",
+  "authDomain": "td-groups.firebaseapp.com",
+  "databaseURL": "https://td-groups.firebaseio.com/",
+  "storageBucket": "td-groups.appspot.com"
+}
+
+firebase = pyrebase.initialize_app(config)
 app = Flask(__name__)
 CORS(app)
 
@@ -20,7 +40,14 @@ def home():
 @app.route('/dashboard')
 def dashboard():
   # Call the firebase database and get all the user info
-  user = "Andrew"
+  user = "test-user"
+
+  users_ref = db.collection(u'users')
+  docs = users_ref.stream()
+
+  for doc in docs:
+    print(u'{} => {}'.format(doc.id, doc.to_dict()))
+  
   return render_template("dashboard.html", user=user)
 
 # For registering a user
