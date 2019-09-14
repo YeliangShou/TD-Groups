@@ -12,7 +12,7 @@ def index():
 
 @app.route('/home')
 def home():
-  return 'my home'
+  return render_template("home.html")
 
 @app.route('/dashboard')
 def dashboard():
