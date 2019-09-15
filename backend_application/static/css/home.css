@@ -62,8 +62,7 @@ a img{
 
 
 .android-logo-image {
-  height: 28px;
-  width: 140px;
+  height: 38px;
 }
 
 
@@ -212,6 +211,10 @@ a img{
 
 #startRsvp:hover {
   background-color: #12422a;
+}
+
+#signOut {
+  visibility: hidden;
 }
 
 .android-sub-slogan {
