@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request
 from flask_cors import CORS
+from forms import GroupForm
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import pyrebase 
+
 import json
 from groups import *
 
@@ -24,6 +26,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '23d6332424c296c2bb6d2f1c4454fae2'
 CORS(app)
 
 
@@ -37,9 +40,10 @@ def home():
 
   return render_template("home.html")
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
   # Call the firebase database and get all the user info
+
   user = "test-user"
 
   users_ref = db.collection(u'users')
@@ -48,13 +52,9 @@ def dashboard():
   for doc in docs:
     print(u'{} => {}'.format(doc.id, doc.to_dict()))
 
-  data = {"emailId": "yeliang.shou@gmail.com", "groups": [],
-          "name": "William Zhao", "td-customer-id": "1234"}
-  users_ref.document(u'Newuser').set(data)
+  form = GroupForm()
 
-  print(db.collection(u'users').document(u'seh1abnCJkWfipog5ilwg1UJHOu1').get().to_dict())
-  
-  return render_template("dashboard.html", user=user)
+  return render_template("dashboard.html", user=user, form=form)
 
 # For registering a user
 @app.route('/user', methods=['POST'])
