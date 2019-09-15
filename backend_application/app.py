@@ -50,12 +50,14 @@ def dashboard(uid):
   headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
 
   print(requests.get(url, headers=headers).json())
+
   transactions = (requests.get(url, headers=headers).json())["result"]
   groups = []
   
   for doc in db.collection("groups").get():
-    if (doc.id in user_doc["groups"]): 
-      groups.append(doc)
+
+    if (doc.id in [x.strip() for x in user_doc["groups"]]): 
+      groups.append(doc.to_dict())
       
   result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
 
@@ -65,10 +67,25 @@ def dashboard(uid):
     # form is an object with its fields
     flash("GOOD!")
     form = GroupForm()
+    
+    name = form.name.data
+    members = form.members.data.split(',')
+    desc = form.description.data
+
+    data = {"name": name,
+            "members": members,
+            "desc": desc,
+            "transactions": []}
+
+    db.collection(u'groups').add(data)
+
     return redirect(url_for('dashboard', uid=uid))
   
   # print(result)
   # result = ""
+
+  print(result["groups"])
+
   return render_template("dashboard.html", user=result, form=form)
   
 # For registering a user
@@ -110,6 +127,22 @@ def group_category():
   create_category(group_name, category_name)
   return "Hey"
 
+
+@app.route('/transaction')
+def get_transactions():
+  user_id = request.args.get('userId')
+  get_all_user_transactions(user_id)
+
+@app.route('/group/transaction')
+def group_transaction():
+  groupId = request.args.get('name')
+  docs = db.collection(u'groups').where(u'name', u'==', groupId).stream()
+
+  for doc in docs:
+    print(doc.to_dict())
+
+  return ""
+  
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
