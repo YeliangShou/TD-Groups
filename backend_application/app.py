@@ -56,8 +56,10 @@ def dashboard(uid):
   
   for doc in db.collection("groups").get():
 
-    if (doc.id in [x.strip() for x in user_doc["groups"]]): 
-      groups.append(doc.to_dict())
+    if (doc.id in [x.strip() for x in user_doc["groups"]]):
+      group_dict = doc.to_dict()
+      group_dict["id"] = doc.id 
+      groups.append(group_dict)
       
   result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
 
