@@ -16,7 +16,7 @@ function initFirebaseAuth() {
 function authStateObserver(user) {
   if (user) { // User is signed in!
     console.log("Sign In");
-    //window.location = 'dashboard';
+    window.location = 'dashboard';
   }
 }
 

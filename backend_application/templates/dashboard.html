@@ -98,7 +98,7 @@
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
               <li class="mdl-menu__item">Profile</li>
-              <li class="mdl-menu__item">Logout</li>
+              <li class="mdl-menu__item logout" id ='signOut'>Logout</li>
               <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
             </ul>
           </div>
@@ -359,5 +359,35 @@
       </svg>
 
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    	<script src="jquery-3.4.1.min.js"></script>
+
+
+
+
+
+	    <section id="firebaseui-auth-container"></section>
+
+		<script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js"></script>
+		<script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+
+		<!-- Add Firebase products that you want to use -->
+		<script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-firestore.js"></script>
+
+		<script>
+		// Your web app's Firebase configuration
+		var firebaseConfig = {
+			apiKey: "AIzaSyBST-3U14ztUoOfIADZ00hfl3vFlW-TN8Q",
+			authDomain: "td-groups.firebaseapp.com",
+			databaseURL: "https://td-groups.firebaseio.com",
+			projectId: "td-groups",
+			storageBucket: "td-groups.appspot.com",
+			messagingSenderId: "682275914453",
+			appId: "1:682275914453:web:139bb9d34df46f1d3f585c"
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		</script>
+		<script src="/../static/js/dashboard.js"></script>
   </body>
 </html>
