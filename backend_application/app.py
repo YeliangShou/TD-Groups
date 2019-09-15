@@ -152,12 +152,13 @@ def group_calculate(group_id):
   
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
-  group = db.collection(u'groups').document(group_id).get().todict()
+  group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
+  desc = group["desc"]
   groupMembers = group["members"]
   transactions = group["transactions"]
 
-  return render_template("group.html", name=name, members=groupMembers, transactions=transactions)
+  return render_template("group.html", desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
