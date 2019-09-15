@@ -65,6 +65,18 @@ def dashboard(uid):
     # form is an object with its fields
     flash("GOOD!")
     form = GroupForm()
+    
+    name = form.name.data
+    members = form.members.data.split(',')
+    desc = form.description.data
+
+    data = {"name": name,
+            "members": members,
+            "desc": desc,
+            "transactions": []}
+
+    db.collection(u'groups').add(data)
+
     return redirect(url_for('dashboard', uid=uid))
   
   # print(result)
@@ -110,6 +122,22 @@ def group_category():
   create_category(group_name, category_name)
   return "Hey"
 
+
+@app.route('/transaction')
+def get_transactions():
+  user_id = request.args.get('userId')
+  get_all_user_transactions(user_id)
+
+@app.route('/group/transaction')
+def group_transaction():
+  groupId = request.args.get('name')
+  docs = db.collection(u'groups').where(u'name', u'==', groupId).stream()
+
+  for doc in docs:
+    print(doc.to_dict())
+
+  return ""
+  
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
