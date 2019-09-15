@@ -229,29 +229,29 @@ def transfer(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
   groupMembers = group["members"]
-  transactions = group["transactions"]
+  transactions = db.collection(u"groups").document(group_id).collection(u"transactions").stream()
 
-  transferUrl = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
+  transferUrl = "https://api.td-davinci.com/api/transfers"
   headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
   
   # get the app's account
   appUrl = "https://api.td-davinci.com/api/accounts/self"
-  appAccountId = requests.get(appUrl, headers=headers)["result"]["id"]
+  appAccountId = (requests.get(appUrl, headers=headers).json())["result"]["id"]
   
   for doc in db.collection("users").get():
     user_dict = doc.to_dict()
-    if (user_dict["email"].strip() in [x.strip() for x in groupMembers]):
+    if (user_dict["emailId"].strip() in [x.strip() for x in groupMembers]):
       # Get the user's first available account
       accountIds = []
-      accountUrl= "https://api.td-davinci.com/api/customers/" + doc.id +"/accounts"
-      accountResults = requests.get(accountUrl, headers=headers)
+      accountUrl= "https://api.td-davinci.com/api/customers/" + user_dict["td-customer-id"] +"/accounts"
+      accountResults = requests.get(accountUrl, headers=headers).json()
       for accountType in accountResults["result"]:
         for account in accountResults["result"][accountType]:
           accountIds.append(account["id"])
       
       accountId = accountIds[0]
-
-      netChange = group_calculate(group_id)[user_dict["email"]]
+      print(group_calculate(group_id))
+      netChange = group_calculate(group_id)[user_dict["emailId"]]
 
       postBody = {}
       postBody["amount"] = abs(netChange)
@@ -266,7 +266,7 @@ def transfer(group_id):
 
   for transaction in transactions:
     transaction.reference.delete()
-  return render_template("group.html", name=name)
+  return "done"
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
