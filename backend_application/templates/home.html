@@ -74,6 +74,7 @@ firebase.initializeApp(firebaseConfig);
 	function authStateObserver(user) {
 	  if (user) { // User is signed in!
 	    console.log("Sign In");
+	    localStorage.setItem("uid", firebase.auth().currentUser.uid);
 	    location.href = Flask.url_for('dashboard', {uid: firebase.auth().currentUser.uid});
 
 	  }

@@ -3,7 +3,30 @@
       <main class="mdl-layout__content light-green">
         <div class="mdl-grid demo-content">
           <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+          	
           	{% for group in groups %}
+
+          		<div class='td-group'>
+	          		<div class="demo-card-wide mdl-card">
+					  <div class="mdl-card__title">
+					    <h2 class="mdl-card__title-text">{{group.name}}</h2>
+					  </div>
+					  <div class="mdl-card__supporting-text">
+					  	{{group.description}}
+					  </div>
+					  <div class="mdl-card__actions mdl-card--border">
+					    <a href="{{url_for('group', group_id=group.id)}}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+					      View Group
+					    </a>
+					  </div>
+					  <div class="mdl-card__menu">
+					    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+					      <!-- <i class="material-icons">share</i> -->
+					    </button>
+					  </div>
+					</div>
+	          	</div>
+
           	{% endfor %}
 
 
@@ -17,7 +40,7 @@
 				    Members: Andrew Huang, Delmar Zhao, Tony Luo, Yeliang Shou, Andrew Xing
 				  </div>
 				  <div class="mdl-card__actions mdl-card--border">
-				    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+				    <a href="{{url_for('create_group', group_id=1)}}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
 				      View Group
 				    </a>
 				  </div>
@@ -29,48 +52,6 @@
 				</div>
           	</div>
 
-          	<div class='td-group'>
-          		<div class="demo-card-wide mdl-card">
-				  <div class="mdl-card__title">
-				    <h2 class="mdl-card__title-text">Kamar-Taj</h2>
-				  </div>
-				  <div class="mdl-card__supporting-text">
-				  	Grosvenor, Room 1039, K6H M7W <br>
-				    Members: Andrew Huang, Delmar Zhao, Tony Luo, Yeliang Shou, Andrew Xing
-				  </div>
-				  <div class="mdl-card__actions mdl-card--border">
-				    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-				      View Group
-				    </a>
-				  </div>
-				  <div class="mdl-card__menu">
-				    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-				      <!-- <i class="material-icons">share</i> -->
-				    </button>
-				  </div>
-				</div>
-          	</div>
-
-          	<div class='td-group'>
-          		<div class="demo-card-wide mdl-card">
-				  <div class="mdl-card__title">
-				    <h2 class="mdl-card__title-text">Blue Sky Solar</h2>
-				  </div>
-				  <div class="mdl-card__supporting-text">
-				  	Funds for solar car including parts, electronics, PCBs, solar panels, software and community events and fundraisers.
-				  </div>
-				  <div class="mdl-card__actions mdl-card--border">
-				    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-				      View Group
-				    </a>
-				  </div>
-				  <div class="mdl-card__menu">
-				    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-				      <!-- <i class="material-icons">share</i> -->
-				    </button>
-				  </div>
-				</div>
-          	</div>
 
 
             <div class="Filler" style="height: 200px"></div>
@@ -85,6 +66,13 @@
 			    </tr>
 			  </thead>
 			  <tbody>
+			  	{% for payment in payments %}
+          			<tr>
+				      <td class="mdl-data-table__cell--non-numeric">payment.date</td>
+				      <td>payment.description</td>
+				      <td>payment.cost</td>
+				    </tr>
+          		{% endfor %}
 			    <tr>
 			      <td class="mdl-data-table__cell--non-numeric">2019-09-14 14:24</td>
 			      <td>TIM HORTONS #478 _F</td>
@@ -95,41 +83,7 @@
 			      <td>MTG CO 118828908</td>
 			      <td>$1.25</td>
 			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
-			    <tr>
-			      <td class="mdl-data-table__cell--non-numeric">2019-09-12 4:24</td>
-			      <td>MCDONALD'S #40072 QPS</td>
-			      <td>$2.35</td>
-			    </tr>
+
 			  </tbody>
 			</table>
           </div>

@@ -10,6 +10,7 @@ function initFirebaseAuth() {
 function authStateObserver(user) {
   if (!user) { // User is signed in!
     console.log("Sign Out");
+    localStorage.clear();
     window.location = 'home';
     //location.reload();
   }
