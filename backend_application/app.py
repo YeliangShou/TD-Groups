@@ -184,7 +184,7 @@ def group_calculate(group_id):
 
   form = TransForm()
 
-  return render_template("group.html", form=form, group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
+  return balance
 
 #flag
 @app.route('/group/<string:group_id>', methods=['GET', 'POST'])
