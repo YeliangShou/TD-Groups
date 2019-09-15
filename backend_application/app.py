@@ -45,20 +45,17 @@ def home():
 @app.route('/dashboard/<string:uid>/', methods=['GET', 'POST'])
 def dashboard(uid):
   # Call the firebase database and get all the user info
-  # user_doc = db.collection(u'users').document(uid).get().to_dict()
-  # url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
-  # headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
-
-  # print(requests.get(url, headers=headers).json())
-  # transactions = (requests.get(url, headers=headers).json())["result"]
-  # groups = []
+  user_doc = db.collection(u'users').document(uid).get().to_dict()
+  url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
+  headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
+  transactions = (requests.get(url, headers=headers).json())["result"]
+  groups = []
   
-  # for doc in db.collection("groups").get():
-  #   if (doc.id in user_doc["groups"]): 
-  #     groups.append(doc)
+  for doc in db.collection("groups").get():
+    if (doc.id in [x.strip() for x in user_doc["groups"]]): 
+      groups.append(doc.to_dict())
       
-  # result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
-
+  result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
 
   form = GroupForm()
   if form.validate_on_submit():
@@ -67,8 +64,7 @@ def dashboard(uid):
     form = GroupForm()
     return redirect(url_for('dashboard', uid=uid))
   
-  # print(result)
-  result = ""
+  print(result["groups"])
   return render_template("dashboard.html", user=result, form=form)
   
 # For registering a user
