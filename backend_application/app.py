@@ -25,7 +25,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = '3a4j3ii6u5h4nn59'
+app.config['SECRET_KEY'] = '23d6332424c296c2bb6d2f1c4454fae2'
 CORS(app)
 
 
@@ -50,7 +50,9 @@ def dashboard():
   for doc in docs:
     print(u'{} => {}'.format(doc.id, doc.to_dict()))
 
-  return render_template("dashboard.html", user=user)
+  form = GroupForm()
+
+  return render_template("dashboard.html", user=user, form=form)
 
 # For registering a user
 @app.route('/user', methods=['POST'])
