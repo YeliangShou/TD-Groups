@@ -16,7 +16,7 @@
 
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
-  
+
 }
 .light-green {
   background-color: #EEF6EB;
@@ -229,11 +229,12 @@ _:-ms-input-placeholder, :root .demo-graph {
   color:white;
 }
 .td-background {
-  background-image: url('/static/images/td-logo.png');
-  height: 80px;
-  width: 80px;
-  background-size: cover;
-  transform:scaleX(-1);
+  background-image: url('/static/images/dt_white.png');
+  height: 70px;
+  width: 180px;
+  background-size: contain;
+  background-repeat: no-repeat;
+
 }
 .mdl-data-table {
   border: none;
