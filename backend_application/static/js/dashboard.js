@@ -8,10 +8,10 @@ function initFirebaseAuth() {
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 function authStateObserver(user) {
-  if (!user) { // User is signed in!
+  if (!user) { // User is signed out!
     console.log("Sign Out");
     localStorage.clear();
-    window.location = 'home';
+    // window.location = 'home';
     //location.reload();
   }
 }

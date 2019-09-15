@@ -1,5 +1,5 @@
-$(document).ready(function() {
-	$("#home").on("click", function() {
-		window.location = '/dashboard';
-	});
-});
+// $(document).ready(function() {
+// 	$("#home").on("click", function() {
+// 		window.location = '/dashboard';
+// 	});
+// });

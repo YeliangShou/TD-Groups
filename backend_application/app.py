@@ -5,7 +5,8 @@ from forms import GroupForm
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-import pyrebase 
+import pyrebase
+import requests
 
 import json
 from groups import *
@@ -41,27 +42,35 @@ def home():
 
   return render_template("home.html")
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
+@app.route('/dashboard/<string:uid>/', methods=['GET', 'POST'])
+def dashboard(uid):
   # Call the firebase database and get all the user info
+  # user_doc = db.collection(u'users').document(uid).get().to_dict()
+  # url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
+  # headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
 
-  user = "test-user"
+  # print(requests.get(url, headers=headers).json())
+  # transactions = (requests.get(url, headers=headers).json())["result"]
+  # groups = []
+  
+  # for doc in db.collection("groups").get():
+  #   if (doc.id in user_doc["groups"]): 
+  #     groups.append(doc)
+      
+  # result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
 
-  users_ref = db.collection(u'users')
-  docs = users_ref.stream()
-
-  for doc in docs:
-    print(u'{} => {}'.format(doc.id, doc.to_dict()))
 
   form = GroupForm()
   if form.validate_on_submit():
     # form is an object with its fields
     flash("GOOD!")
     form = GroupForm()
-    return redirect(url_for('dashboard'))
-    
-  return render_template("dashboard.html", user=user, form=form)
-
+    return redirect(url_for('dashboard', uid=uid))
+  
+  # print(result)
+  result = ""
+  return render_template("dashboard.html", user=result, form=form)
+  
 # For registering a user
 @app.route('/user', methods=['POST'])
 def create_user():
