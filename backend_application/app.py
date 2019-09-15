@@ -47,6 +47,12 @@ def dashboard():
 
   for doc in docs:
     print(u'{} => {}'.format(doc.id, doc.to_dict()))
+
+  data = {"emailId": "yeliang.shou@gmail.com", "groups": [],
+          "name": "William Zhao", "td-customer-id": "1234"}
+  users_ref.document(u'Newuser').set(data)
+
+  print(db.collection(u'users').document(u'seh1abnCJkWfipog5ilwg1UJHOu1').get().to_dict())
   
   return render_template("dashboard.html", user=user)
 
@@ -75,7 +81,8 @@ def create_group():
   group_name = group_json["groupName"]
   group_members = group_json["groupMembers"]
 
-  create_new_group(group_name, group_members)
+  data = create_new_group(group_name, group_members)
+  db.collection(u'groups').document(u'').set(data)
   return "Creating group"
 
 # Creating group categories
@@ -107,8 +114,9 @@ def create_transaction():
   else:
     return "err"
 
-@app.route('/group/category/transaction/<string:transaction_id>')
-def get_transaction(transaction_id):
+@app.route('/group/category/<string:category_id>/transaction/<string:transaction_id>')
+def get_transaction(category_id, transaction_id):
+  get_single_transaction(category_id, transaction_id)
   return "get specific transaction"
 
 
