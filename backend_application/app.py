@@ -135,16 +135,29 @@ def get_transactions():
   user_id = request.args.get('userId')
   get_all_user_transactions(user_id)
 
-@app.route('/group/transaction')
 def group_transaction():
   groupId = request.args.get('name')
   docs = db.collection(u'groups').where(u'name', u'==', groupId).stream()
 
+  transactions = []
   for doc in docs:
-    print(doc.to_dict())
+    transactions.append(doc.to_dict())
 
-  return ""
+  return render_template("group.html", transactions=transactions)
+
+@app.route('/group/<string:group_id>/calculate/')
+def group_calculate(group_id):
+  group = db.collection(u'groups').document(group_id).get().to_dict()
+  transactions = group["transactions"]
   
+@app.route('/group/<string:group_id>')
+def group_route(group_id):
+  group = db.collection(u'groups').document(group_id).get().todict()
+  name = group["name"]
+  groupMembers = group["members"]
+  transactions = group["transactions"]
+
+  return render_template("group.html", name=name, members=groupMembers, transactions=transactions)
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
