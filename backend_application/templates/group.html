@@ -1,3 +1,4 @@
+{{ JSGlue.include() }}
 {% extends "template.html" %}
 {% block content %}
       <main class="mdl-layout__content light-green">
@@ -21,9 +22,10 @@
 				  {% endfor %}
 			   </ul>
 
-				<button href="{{url_for('group_calculate', group_id=group_id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
+				<button id="transfer" href="{{url_for('group_calculate', group_id=group_id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
 				  Transfer
 				</button>
+				<div id="hidden" style="visibility:hidden">{{group_id}}</div>
 			</div>
           </div>
 
@@ -130,4 +132,20 @@
 			</div>
         </div>
       </main>
+      <script
+			src="https://code.jquery.com/jquery-3.4.1.min.js"
+			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			crossorigin="anonymous">
+	    </script>
+      <script>
+      	let group_id = $("#hidden").text();
+      	$("#transfer").on("click", function() {
+      		console.log(group_id);
+      		$.get( Flask.url_for('group_calculate', {group_id:group_id}), function( data ) {
+			  console.log(data);
+			  alert( "Load was performed." );
+			});
+      	})
+      	
+      </script>
 {% endblock content %}
