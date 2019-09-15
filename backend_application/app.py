@@ -148,7 +148,17 @@ def group_transaction():
 @app.route('/group/<string:group_id>/calculate/')
 def group_calculate(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
-  transactions = group["transactions"]
+  name = group["name"]
+  desc = group["desc"]
+  groupMembers = group["members"]
+
+  trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
+
+  transactions = []
+  for doc in trans:
+    transactions.append(doc.to_dict())
+
+  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
@@ -160,10 +170,17 @@ def group_route(group_id):
   trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
 
   transactions = []
-  for doc in docs
+  for doc in trans:
     transactions.append(doc.to_dict())
 
-  return render_template("group.html", desc=desc, name=name, members=groupMembers, transactions=transactions)
+
+  for transaction in transactions:
+    stri = ""
+    for key in transaction['owings']:
+      stri += "%s: $%s, " % (key, transaction['owings'][key])
+    transaction['owings'] = stri
+
+  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 @app.route('/group/<string:group_id>/transaction', methods=['POST'])
 def make_transaction(group_id):

@@ -20,8 +20,8 @@
 				  </li>
 				  {% endfor %}
 			   </ul>
-							  <!-- Raised button -->
-				<button href="{{url_for('group_calculate', group_id=group.id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
+
+				<button href="{{url_for('group_calculate', group_id=group_id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
 				  Transfer
 				</button>
 			</div>
@@ -32,14 +32,16 @@
 			    <tr>
 			      <th class="mdl-data-table__cell--non-numeric">Date</th>
 			      <th>Description</th>
+			      <th>Owings</th>
 			      <th>Amount</th>
 			    </tr>
 			  </thead>
 			  <tbody>
 			  	{% for transaction in transactions %}
 				  	<tr>
-				      <td class="mdl-data-table__cell--non-numeric">{{transaction.name}}</td>
-				      <td>{{transaction.desc}}</td>
+				      <td class="mdl-data-table__cell--non-numeric">{{transaction.owner}}</td>
+				      <td>{{transaction.description}}</td>
+				      <td style = "white-space: pre-wrap">{{transaction.owings}}</td>
 				      <td>${{transaction.cost}}</td>
 				    </tr>
 			  	{% endfor %}
