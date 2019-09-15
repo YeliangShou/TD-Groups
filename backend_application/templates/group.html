@@ -149,6 +149,7 @@
       		console.log(group_id);
       		$.get( Flask.url_for('group_calculate', {group_id:group_id}), function( data ) {
 			  console.log(data);
+			  $("#transferInfo").empty();
 			    Object.keys(data).forEach(function(key,index) {
 			    	let $span = $("<span>").text(key + ' : ' + data[key]).addClass("mdl-list__item-primary-content");
 			    	let $li = $("<li>").addClass("mdl-list__item");
