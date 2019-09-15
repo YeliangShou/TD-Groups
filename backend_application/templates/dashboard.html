@@ -97,8 +97,8 @@
               <span class="visuallyhidden">Accounts</span>
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-              <li class="mdl-menu__item">hello@example.com</li>
-              <li class="mdl-menu__item">info@example.com</li>
+              <li class="mdl-menu__item">Profile</li>
+              <li class="mdl-menu__item">Logout</li>
               <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
             </ul>
           </div>
@@ -247,15 +247,58 @@
           </div>
           <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
             <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
-              <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
-                <h2 class="mdl-card__title-text">Updates</h2>
-              </div>
-              <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                Non dolore elit adipisicing ea reprehenderit consectetur culpa.
-              </div>
-              <div class="mdl-card__actions mdl-card--border">
-                <a href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect">Read More</a>
-              </div>
+	              	<div id ="mycard">
+
+						<div class="demo-card-wide mdl-card ">
+						    <div class="mdl-card__title">
+						        <h2 class="mdl-card__title-text" style="color: black">Create a Group</h2>
+						    </div>
+						  
+						  
+						    <div class="mdl-card__supporting-text">
+						   	Seperate member emails with spaces.
+						   	<br><br>
+					    	<form method="POST" action="">
+						      
+							      <div id="name">
+									  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+									    <input class="mdl-textfield__input" type="text" id="first">
+									    <label class="mdl-textfield__label" for="sample3">First Name</label>
+									  </div>
+							          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										    <input class="mdl-textfield__input" type="text" id="last">
+										    <label class="mdl-textfield__label" for="sample3">Last Name</label>
+								  		</div>
+							      </div>
+								      
+								      <div id ="contact">
+								      <div id="phone">
+								        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="mobile">
+								    <label class="mdl-textfield__label" for="sample2">Mobile Phone</label>
+								    <span class="mdl-textfield__error">Mobile must be a number!</span>
+								  </div>
+								      </div>
+								      
+								       <div id="email">
+								        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								    <input class="mdl-textfield__input" type="email" >
+								    <label class="mdl-textfield__label" for="sample2">E-mail</label>
+								    <span class="mdl-textfield__error">Enter a valid email!</span>
+								  </div>
+								      </div>
+								      </div>
+							</form>
+						  </div>
+						</div>
+
+						  <!-- FAB button with ripple -->
+						  <div id="next">
+						<button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+						  <i class="material-icons">arrow_forward</i>
+						</button>
+						  </div>
+						</div>
             </div>
             <div class="demo-separator mdl-cell--1-col"></div>
             <div class="demo-options mdl-card green mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
@@ -295,6 +338,9 @@
               </div>
             </div>
           </div>
+
+
+			</div>
         </div>
       </main>
     </div>
