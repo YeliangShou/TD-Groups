@@ -7,6 +7,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import pyrebase
 import requests
+import ast
 
 import json
 from groups import *
@@ -172,7 +173,7 @@ def group_calculate(group_id):
   return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 #flag
-@app.route('/group/<string:group_id>')
+@app.route('/group/<string:group_id>', methods=['GET', 'POST'])
 def group_route(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
@@ -195,12 +196,12 @@ def group_route(group_id):
   if form.validate_on_submit():
     owner = form.owner.data
     cost = form.cost.data
-    owings = form.owings.data
-    desc = forms.desc.data
+    owings = ast.literal_eval(form.owings.data)
+    desc = form.description.data
 
     data = {"cost": cost,
             "owner": owner,
-            "ownings": ownings,
+            "owings": owings,
             "description": desc}
 
     db.collection(u'groups').document(group_id).collection('transactions').add(data)
