@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_jsglue import JSGlue
 from flask_cors import CORS
 from forms import GroupForm
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import pyrebase
+import requests
 
 import json
 from groups import *
@@ -26,6 +28,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 app = Flask(__name__)
+jsglue = JSGlue(app)
 app.config['SECRET_KEY'] = '23d6332424c296c2bb6d2f1c4454fae2'
 CORS(app)
 
@@ -39,21 +42,53 @@ def home():
 
   return render_template("home.html")
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
+@app.route('/dashboard/<string:uid>/', methods=['GET', 'POST'])
+def dashboard(uid):
   # Call the firebase database and get all the user info
+  user_doc = db.collection(u'users').document(uid).get().to_dict()
+  url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
+  headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
 
-  user = "test-user"
+  print(requests.get(url, headers=headers).json())
 
-  users_ref = db.collection(u'users')
-  docs = users_ref.stream()
+  transactions = (requests.get(url, headers=headers).json())["result"]
+  groups = []
 
-  for doc in docs:
-    print(u'{} => {}'.format(doc.id, doc.to_dict()))
+  for doc in db.collection("groups").get():
+
+    if (doc.id in [x.strip() for x in user_doc["groups"]]):
+      group_dict = doc.to_dict()
+      group_dict["id"] = doc.id
+      groups.append(group_dict)
+
+  result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
+
 
   form = GroupForm()
+  if form.validate_on_submit():
+    # form is an object with its fields
+    flash("GOOD!")
+    form = GroupForm()
 
-  return render_template("dashboard.html", user=user, form=form)
+    name = form.name.data
+    members = form.members.data.split(',')
+    desc = form.description.data
+
+    data = {"name": name,
+            "members": members,
+            "desc": desc,
+            "transactions": []}
+
+    db.collection(u'groups').add(data)
+
+    return redirect(url_for('dashboard', uid=uid))
+
+  # print(result)
+  # result = ""
+
+  print(result["groups"])
+
+  return render_template("dashboard.html", user=result, form=form)
 
 # For registering a user
 @app.route('/user', methods=['POST'])
@@ -73,16 +108,16 @@ def assign_user_to_group():
   return "Assigning user to group"
 
 # Registering a new group
-@app.route('/group', methods=['POST'])
+@app.route('/group', methods=['GET', 'POST'])
 def create_group():
-  print(request.get_json())
-  group_json = request.get_json()
-  group_name = group_json["groupName"]
-  group_members = group_json["groupMembers"]
+  # print(request.get_json())
+  # group_json = request.get_json()
+  # group_name = group_json["groupName"]
+  # group_members = group_json["groupMembers"]
 
-  data = create_new_group(group_name, group_members)
-  db.collection(u'groups').document(u'').set(data)
-  return "Creating group"
+  # data = create_new_group(group_name, group_members)
+  # db.collection(u'groups').document(u'').set(data)
+  return render_template("group.html", user='user')
 
 # Creating group categories
 @app.route('/group/category', methods=['POST'])
@@ -94,6 +129,35 @@ def group_category():
   create_category(group_name, category_name)
   return "Hey"
 
+
+@app.route('/transaction')
+def get_transactions():
+  user_id = request.args.get('userId')
+  get_all_user_transactions(user_id)
+
+def group_transaction():
+  groupId = request.args.get('name')
+  docs = db.collection(u'groups').where(u'name', u'==', groupId).stream()
+
+  transactions = []
+  for doc in docs:
+    transactions.append(doc.to_dict())
+
+  return render_template("group.html", transactions=transactions)
+
+@app.route('/group/<string:group_id>/calculate/')
+def group_calculate(group_id):
+  group = db.collection(u'groups').document(group_id).get().to_dict()
+  transactions = group["transactions"]
+
+@app.route('/group/<string:group_id>')
+def group_route(group_id):
+  group = db.collection(u'groups').document(group_id).get().todict()
+  name = group["name"]
+  groupMembers = group["members"]
+  transactions = group["transactions"]
+
+  return render_template("group.html", name=name, members=groupMembers, transactions=transactions)
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
