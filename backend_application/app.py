@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request
 from flask_cors import CORS
+from forms import GroupForm
 import json
 
 app = Flask(__name__)
+# app.config['SECRET_KEY'] = '3a4j3ii6u5h4nn59'
 CORS(app)
 
 
@@ -15,10 +17,12 @@ def home():
 
   return render_template("home.html")
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
   # Call the firebase database and get all the user info
   user = "Andrew"
+  #form = GroupForm()
+  #return render_template("dashboard.html", user=user, form=form)
   return render_template("dashboard.html", user=user)
 
 # For registering a user
