@@ -77,7 +77,7 @@ def dashboard(uid):
     data = {"name": name,
             "members": members,
             "desc": desc,
-            "transactions": []}
+            }
 
     db.collection(u'groups').add(data)
 
@@ -148,16 +148,47 @@ def group_transaction():
 @app.route('/group/<string:group_id>/calculate/')
 def group_calculate(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
-  transactions = group["transactions"]
+  name = group["name"]
+  desc = group["desc"]
+  groupMembers = group["members"]
+
+  trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
+
+  transactions = []
+  for doc in trans:
+    transactions.append(doc.to_dict())
+
+  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
-  group = db.collection(u'groups').document(group_id).get().todict()
+  group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
+  desc = group["desc"]
   groupMembers = group["members"]
-  transactions = group["transactions"]
 
-  return render_template("group.html", name=name, members=groupMembers, transactions=transactions)
+  trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
+
+  transactions = []
+  for doc in trans:
+    transactions.append(doc.to_dict())
+
+
+  for transaction in transactions:
+    stri = ""
+    for key in transaction['owings']:
+      stri += "%s: $%s, " % (key, transaction['owings'][key])
+    transaction['owings'] = stri
+
+  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
+
+@app.route('/group/<string:group_id>/transaction', methods=['POST'])
+def make_transaction(group_id):
+  transaction_json = request.get_json()
+  data = parse_transaction(transaction_json)
+
+  db.collection(u'groups').document(group_id).collection('transactions').add(data)
+  return "Good"
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
