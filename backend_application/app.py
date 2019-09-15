@@ -77,7 +77,7 @@ def dashboard(uid):
     data = {"name": name,
             "members": members,
             "desc": desc,
-            "transactions": []}
+            }
 
     db.collection(u'groups').add(data)
 
@@ -152,12 +152,25 @@ def group_calculate(group_id):
   
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
-  group = db.collection(u'groups').document(group_id).get().todict()
+  group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
   groupMembers = group["members"]
-  transactions = group["transactions"]
+
+  trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
+
+  transactions = []
+  for doc in docs
+    transactions.append(doc.to_dict())
 
   return render_template("group.html", name=name, members=groupMembers, transactions=transactions)
+
+@app.route('/group/<string:group_id>/transaction', methods=['POST'])
+def make_transaction(group_id):
+  transaction_json = request.get_json()
+  data = parse_transaction(transaction_json)
+
+  db.collection(u'groups').document(group_id).collection('transactions').add(data)
+  return "Good"
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
