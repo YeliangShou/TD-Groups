@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_jsglue import JSGlue
 from flask_cors import CORS
 from forms import GroupForm
 import firebase_admin
@@ -26,14 +27,14 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 app = Flask(__name__)
+jsglue = JSGlue(app)
 app.config['SECRET_KEY'] = '23d6332424c296c2bb6d2f1c4454fae2'
 CORS(app)
 
 
 @app.route('/')
 def index():
-  test("yo")
-  return 'Hello world'
+  return render_template("home.html")
 
 @app.route('/home')
 def home():
@@ -79,16 +80,16 @@ def assign_user_to_group():
   return "Assigning user to group"
 
 # Registering a new group
-@app.route('/group', methods=['POST'])
+@app.route('/group', methods=['GET', 'POST'])
 def create_group():
-  print(request.get_json())
-  group_json = request.get_json()
-  group_name = group_json["groupName"]
-  group_members = group_json["groupMembers"]
+  # print(request.get_json())
+  # group_json = request.get_json()
+  # group_name = group_json["groupName"]
+  # group_members = group_json["groupMembers"]
 
-  data = create_new_group(group_name, group_members)
-  db.collection(u'groups').document(u'').set(data)
-  return "Creating group"
+  # data = create_new_group(group_name, group_members)
+  # db.collection(u'groups').document(u'').set(data)
+  return render_template("group.html", user='user')
 
 # Creating group categories
 @app.route('/group/category', methods=['POST'])
