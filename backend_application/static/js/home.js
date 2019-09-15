@@ -15,7 +15,7 @@ function initFirebaseAuth() {
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 function authStateObserver(user) {
   if (user) { // User is signed in!
-    console.log("AHHHHHHHHHHHHHHHHH");
+    console.log("Sign In");
     //window.location = 'dashboard';
   }
 }
@@ -35,6 +35,7 @@ const signOutButton = document.getElementById('signOut');
 startRsvpButton.addEventListener("click",
  () => {
    var provider = new firebase.auth.GoogleAuthProvider();
+   provider.setCustomParameters({prompt: 'select_account'});
    firebase.auth().signInWithPopup(provider);
 });
 
