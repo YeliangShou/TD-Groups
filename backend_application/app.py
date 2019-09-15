@@ -50,8 +50,6 @@ def dashboard(uid):
   url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
   headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
 
-  print(requests.get(url, headers=headers).json())
-
   transactions = (requests.get(url, headers=headers).json())["result"]
   groups = []
 
@@ -83,9 +81,6 @@ def dashboard(uid):
     db.collection(u'groups').add(data)
 
     return redirect(url_for('dashboard', uid=uid))
-
-  # print(result)
-  # result = ""
 
   print(result["groups"])
 
@@ -240,6 +235,7 @@ def transfer(group_id):
   
   for doc in db.collection("users").get():
     user_dict = doc.to_dict()
+    user_dict["emailId"].strip()
     if (user_dict["emailId"].strip() in [x.strip() for x in groupMembers]):
       # Get the user's first available account
       accountIds = []
@@ -250,7 +246,6 @@ def transfer(group_id):
           accountIds.append(account["id"])
       
       accountId = accountIds[0]
-      print(group_calculate(group_id))
       netChange = group_calculate(group_id)[user_dict["emailId"]]
 
       postBody = {}
@@ -272,7 +267,6 @@ def transfer(group_id):
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
 def create_transaction():
   if request.method == 'POST':
-    print(request.get_json())
     transaction_json = request.get_json()
     group_name = transaction_json["groupName"]
     category_name = transaction_json["category_name"]
