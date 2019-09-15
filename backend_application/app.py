@@ -193,6 +193,18 @@ def group_route(group_id):
     transaction['owings'] = stri
 
   if form.validate_on_submit():
+    owner = form.owner.data
+    cost = form.cost.data
+    owings = form.owings.data
+    desc = forms.desc.data
+
+    data = {"cost": cost,
+            "owner": owner,
+            "ownings": ownings,
+            "description": desc}
+
+    db.collection(u'groups').document(group_id).collection('transactions').add(data)
+     
     return redirect(url_for('group_route', group_id=group_id))
 
   return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions, form=form)
