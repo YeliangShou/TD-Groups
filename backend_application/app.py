@@ -53,14 +53,14 @@ def dashboard(uid):
 
   transactions = (requests.get(url, headers=headers).json())["result"]
   groups = []
-  
+
   for doc in db.collection("groups").get():
 
     if (doc.id in [x.strip() for x in user_doc["groups"]]):
       group_dict = doc.to_dict()
-      group_dict["id"] = doc.id 
+      group_dict["id"] = doc.id
       groups.append(group_dict)
-      
+
   result = {"user": user_doc, "transactions": transactions[:10], "groups" : groups}
 
 
@@ -69,7 +69,7 @@ def dashboard(uid):
     # form is an object with its fields
     flash("GOOD!")
     form = GroupForm()
-    
+
     name = form.name.data
     members = form.members.data.split(',')
     desc = form.description.data
@@ -82,14 +82,14 @@ def dashboard(uid):
     db.collection(u'groups').add(data)
 
     return redirect(url_for('dashboard', uid=uid))
-  
+
   # print(result)
   # result = ""
 
   print(result["groups"])
 
   return render_template("dashboard.html", user=result, form=form)
-  
+
 # For registering a user
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -149,7 +149,7 @@ def group_transaction():
 def group_calculate(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
   transactions = group["transactions"]
-  
+
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
