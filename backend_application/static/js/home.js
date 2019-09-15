@@ -16,6 +16,7 @@ function initFirebaseAuth() {
 function authStateObserver(user) {
   if (user) { // User is signed in!
     console.log("Sign In");
+    var userID = firebase.auth().currentUser.uid;
     window.location = 'dashboard';
   }
 }

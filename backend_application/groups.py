@@ -30,3 +30,15 @@ def get_all_user_transactions(user_id):
   response = requests.get(f'https://api.td-davinci.com/api/customers/{user_id}/transactions',
     headers = { 'Authorization': TD_API_KEY })
   
+def parse_transaction(transaction_json):
+  lumpsum = transaction_json["cost"]
+  owner = transaction_json["owner"]
+  owings = transaction_json["owings"]
+  desc = transaction_json["description"]
+  data = {"cost":lumpsum,
+          "owner": owner,
+          "owings": owings,
+          "description": desc,
+          }
+
+  return data
