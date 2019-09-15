@@ -167,10 +167,24 @@ def group_calculate(group_id):
   trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
 
   transactions = []
+  balance = {}
   for doc in trans:
-    transactions.append(doc.to_dict())
+    transaction = doc.to_dict()
+    owner = transaction["owner"]
+    for person in transaction["owings"]:
+      try:
+        balance[owner] += transaction["owings"][person]
+      except KeyError:
+        balance[owner] = transaction["owings"][person]
+      try:
+        balance[person] -= transaction["owings"][person]
+      except KeyError:
+        balance[person] = -transaction["owings"][person]
+    transactions.append(transaction)
 
-  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
+  form = TransForm()
+
+  return render_template("group.html", form=form, group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
 #flag
 @app.route('/group/<string:group_id>', methods=['GET', 'POST'])
