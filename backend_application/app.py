@@ -186,7 +186,6 @@ def group_route(group_id):
   for doc in trans:
     transactions.append(doc.to_dict())
 
-
   for transaction in transactions:
     stri = ""
     for key in transaction['owings']:
