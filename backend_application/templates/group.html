@@ -26,32 +26,106 @@
 				</button>
 			</div>
           </div>
-          <div class="demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
-			  <thead>
-			    <tr>
-			      <th class="mdl-data-table__cell--non-numeric">Date</th>
-			      <th>Description</th>
-			      <th>Owings</th>
-			      <th>Amount</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			  	{% for transaction in transactions %}
-				  	<tr>
-				      <td class="mdl-data-table__cell--non-numeric">{{transaction.owner}}</td>
-				      <td>{{transaction.description}}</td>
-				      <td style = "white-space: pre-wrap">{{transaction.owings}}</td>
-				      <td>${{transaction.cost}}</td>
-				    </tr>
-			  	{% endfor %}
 
-			  </tbody>
-			</table>
-          </div>
-          
+          <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+            <form method="POST" action="">
+	    		{{ form.hidden_tag() }}
+	    		<fieldset>
+				      	<div>
+						    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 
+								{{ form.owner.label(class="mdl-textfield__input") }}
 
+						            {% if form.owner.errors %}
+						            	{{ form.owner(class="form-control") }}
+							            <div class="">
+							              	{% for error in form.owner.errors %}
+							                	<span>{{ error }}</span>
+							              	{% endfor %}
+							            </div>
+						          {% else %}
+						            	{{ form.owner(class="mdl-textfield__input") }}
+						          {% endif %}
+
+						    </div>
+				            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+								{{ form.cost.label(class="mdl-textfield__input") }}
+
+						          {% if form.cost.errors %}
+						            {{ form.cost(class="form-control") }}
+						            <div class="">
+						              {% for error in form.cost.errors %}
+						                <span>{{ error }}</span>
+						              {% endfor %}
+						            </div>
+						          {% else %}
+						            {{ form.cost(class="mdl-textfield__input") }}
+						          {% endif %}
+
+						  	</div>
+						  	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+								{{ form.owings.label(class="mdl-textfield__input") }}
+
+						          {% if form.owings.errors %}
+						            {{ form.owings(class="form-control") }}
+						            <div class="">
+						              {% for error in form.owings.errors %}
+						                <span>{{ error }}</span>
+						              {% endfor %}
+						            </div>
+						          {% else %}
+						            {{ form.owings(class="mdl-textfield__input") }}
+						          {% endif %}
+
+						 	 </div>
+				            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+								{{ form.description.label(class="mdl-textfield__input") }}
+
+						          {% if form.description.errors %}
+						            {{ form.description(class="form-control") }}
+						            <div class="">
+						              {% for error in form.description.errors %}
+						                <span>{{ error }}</span>
+						              {% endfor %}
+						            </div>
+						          {% else %}
+						            {{ form.description(class="mdl-textfield__input") }}
+						          {% endif %}
+
+						 	 </div>
+					      </div>
+					      {{ form.submit(class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect") }}
+
+					      </div>
+				  	</fieldset>
+				</form>
+				<div class="demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+		            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+					  <thead>
+					    <tr>
+					      <th class="mdl-data-table__cell--non-numeric">Owner</th>
+					      <th>Description</th>
+					      <th>Owings</th>
+					      <th>Amount</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	{% for transaction in transactions %}
+						  	<tr>
+						      <td class="mdl-data-table__cell--non-numeric">{{transaction.owner}}</td>
+						      <td>{{transaction.description}}</td>
+						      <td style = "white-space: pre-wrap">{{transaction.owings}}</td>
+						      <td>${{transaction.cost}}</td>
+						    </tr>
+					  	{% endfor %}
+
+					  </tbody>
+					</table>
+		          </div>
+				  </div>
 			</div>
         </div>
       </main>

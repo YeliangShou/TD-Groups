@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_jsglue import JSGlue
 from flask_cors import CORS
-from forms import GroupForm
+from forms import GroupForm, TransForm
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -90,6 +90,14 @@ def dashboard(uid):
 
   return render_template("dashboard.html", user=result, form=form)
 
+@app.route('/group/<string:group_id>/transaction', methods=['POST'])
+def make_transaction(group_id):
+  transaction_json = request.get_json()
+  data = parse_transaction(transaction_json)
+
+  db.collection(u'groups').document(group_id).collection('transactions').add(data)
+  return redirect(url_for('group', group_id=group_id))
+
 # For registering a user
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -110,6 +118,9 @@ def assign_user_to_group():
 # Registering a new group
 @app.route('/group', methods=['GET', 'POST'])
 def create_group():
+  form = TransForm()
+  if form.validate_on_submit():
+    return redirect(url_for('group', uid=uid))
   # print(request.get_json())
   # group_json = request.get_json()
   # group_name = group_json["groupName"]
@@ -117,7 +128,7 @@ def create_group():
 
   # data = create_new_group(group_name, group_members)
   # db.collection(u'groups').document(u'').set(data)
-  return render_template("group.html", user='user')
+  return render_template("group.html", user='user', form=form)
 
 # Creating group categories
 @app.route('/group/category', methods=['POST'])
@@ -160,12 +171,14 @@ def group_calculate(group_id):
 
   return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
 
+#flag
 @app.route('/group/<string:group_id>')
 def group_route(group_id):
   group = db.collection(u'groups').document(group_id).get().to_dict()
   name = group["name"]
   desc = group["desc"]
   groupMembers = group["members"]
+  form = TransForm()
 
   trans = db.collection(u'groups').document(group_id).collection(u'transactions').stream()
 
@@ -180,15 +193,10 @@ def group_route(group_id):
       stri += "%s: $%s, " % (key, transaction['owings'][key])
     transaction['owings'] = stri
 
-  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions)
+  if form.validate_on_submit():
+    return redirect(url_for('group_route', group_id=group_id))
 
-@app.route('/group/<string:group_id>/transaction', methods=['POST'])
-def make_transaction(group_id):
-  transaction_json = request.get_json()
-  data = parse_transaction(transaction_json)
-
-  db.collection(u'groups').document(group_id).collection('transactions').add(data)
-  return "Good"
+  return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions, form=form)
 
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
