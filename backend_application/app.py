@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_cors import CORS
 from forms import GroupForm
 import firebase_admin
@@ -51,7 +51,12 @@ def dashboard():
     print(u'{} => {}'.format(doc.id, doc.to_dict()))
 
   form = GroupForm()
-
+  if form.validate_on_submit():
+    # form is an object with its fields
+    flash("GOOD!")
+    form = GroupForm()
+    return redirect(url_for('dashboard'))
+    
   return render_template("dashboard.html", user=user, form=form)
 
 # For registering a user

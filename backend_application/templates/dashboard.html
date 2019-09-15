@@ -61,6 +61,15 @@
     </style>
   </head>
   <body>
+  	{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header light-green">
       <header class="demo-header mdl-layout__header">
         <div class="mdl-layout__header-row green">
@@ -260,46 +269,66 @@
 						   	<br><br>
 					    	<form method="POST" action="">
 					    		{{ form.hidden_tag() }}
-						      
-							      <div id="name">
-									  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-									    <input class="mdl-textfield__input" type="text" id="first">
-									    <label class="mdl-textfield__label" for="sample3">First Name</label>
-									  </div>
-							          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-										    <input class="mdl-textfield__input" type="text" id="last">
-										    <label class="mdl-textfield__label" for="sample3">Last Name</label>
-								  		</div>
-							      </div>
-								      
-								      <div id ="contact">
-								      <div id="phone">
-								        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-								    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="mobile">
-								    <label class="mdl-textfield__label" for="sample2">Mobile Phone</label>
-								    <span class="mdl-textfield__error">Mobile must be a number!</span>
-								  </div>
-								      </div>
-								      
-								       <div id="email">
-								        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-								    <input class="mdl-textfield__input" type="email" >
-								    <label class="mdl-textfield__label" for="sample2">E-mail</label>
-								    <span class="mdl-textfield__error">Enter a valid email!</span>
-								  </div>
-								      </div>
-								      </div>
+					    		<fieldset>
+						      		
+								      	<div>
+										    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+												{{ form.name.label(class="mdl-textfield__input") }}
+
+										            {% if form.name.errors %}
+										            	{{ form.name(class="form-control") }}
+											            <div class="">
+											              	{% for error in form.name.errors %}
+											                	<span>{{ error }}</span>
+											              	{% endfor %}
+											            </div>
+										          {% else %}
+										            	{{ form.name(class="mdl-textfield__input") }}
+										          {% endif %}
+
+										    </div>
+								            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+												{{ form.members.label(class="mdl-textfield__input") }}
+
+										          {% if form.members.errors %}
+										            {{ form.members(class="form-control") }}
+										            <div class="">
+										              {% for error in form.members.errors %}
+										                <span>{{ error }}</span>
+										              {% endfor %}
+										            </div>
+										          {% else %}
+										            {{ form.members(class="mdl-textfield__input") }}
+										          {% endif %}
+
+										  </div>
+      								          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+												{{ form.description.label(class="mdl-textfield__input") }}
+
+										          {% if form.description.errors %}
+										            {{ form.description(class="form-control") }}
+										            <div class="">
+										              {% for error in form.description.errors %}
+										                <span>{{ error }}</span>
+										              {% endfor %}
+										            </div>
+										          {% else %}
+										            {{ form.description(class="mdl-textfield__input") }}
+										          {% endif %}
+
+										 	 </div>
+									      </div>
+									      {{ form.submit(class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect") }}
+
+									      </div>
+								  	</fieldset>
 							</form>
 						  </div>
 						</div>
-
-						  <!-- FAB button with ripple -->
-						  <div id="next">
-						<button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
-						  <i class="material-icons">arrow_forward</i>
-						</button>
-						  </div>
-						</div>
+					</div>
             </div>
             <div class="demo-separator mdl-cell--1-col"></div>
             <div class="demo-options mdl-card green mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">

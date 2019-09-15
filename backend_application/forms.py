@@ -7,4 +7,4 @@ class GroupForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     members = StringField('Members', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[])
-    submit = SubmitField('Post')
+    submit = SubmitField('Submit')
