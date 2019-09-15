@@ -4,7 +4,7 @@ from forms import GroupForm
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-import pyrebase 
+import pyrebase
 
 import json
 from groups import *
@@ -32,8 +32,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-  test("yo")
-  return 'Hello world'
+  return render_template("home.html")
 
 @app.route('/home')
 def home():
