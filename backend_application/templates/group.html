@@ -22,9 +22,12 @@
 				  {% endfor %}
 			   </ul>
 			   
-
-				<button id="transfer" href="{{url_for('group_calculate', group_id=group_id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
+			   <button id="transfer" href="{{url_for('transfer', group_id=group_id)}}" style="width: 130px; margin-bottom:20px;" class="mdl-button mdl-js-button mdl-button--raised">
 				  Transfer
+				</button>
+
+				<button id="calculate" href="{{url_for('group_calculate', group_id=group_id)}}" style="width: 130px" class="mdl-button mdl-js-button mdl-button--raised">
+				  Calculate
 				</button>
 			   		<ul class="demo-list-item mdl-list" id="transferInfo">
 					</ul>
@@ -142,10 +145,11 @@
 	    </script>
       <script>
       	let group_id = $("#hidden").text();
-      	$("#transfer").on("click", function() {
+      	$("#calculate").on("click", function() {
       		console.log(group_id);
       		$.get( Flask.url_for('group_calculate', {group_id:group_id}), function( data ) {
 			  console.log(data);
+			  $("#transferInfo").empty();
 			    Object.keys(data).forEach(function(key,index) {
 			    	let $span = $("<span>").text(key + ' : ' + data[key]).addClass("mdl-list__item-primary-content");
 			    	let $li = $("<li>").addClass("mdl-list__item");
@@ -154,7 +158,21 @@
 				    // index: the ordinal position of the key within the object 
 				});
 			});
-      	})
+      	});
+
+      	$("#transfer").on("click", function() {
+      		console.log(group_id);
+      		$.get( Flask.url_for('transfer', {group_id:group_id}), function( data ) {
+			  console.log(data);
+			 //    Object.keys(data).forEach(function(key,index) {
+			 //    	let $span = $("<span>").text(key + ' : ' + data[key]).addClass("mdl-list__item-primary-content");
+			 //    	let $li = $("<li>").addClass("mdl-list__item");
+			 //    	$("#transferInfo").append($li.append($span));
+				//     // key: the name of the object key
+				//     // index: the ordinal position of the key within the object 
+				// });
+			});
+      	});
       	
       </script>
 {% endblock content %}

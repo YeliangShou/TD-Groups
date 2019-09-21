@@ -50,8 +50,6 @@ def dashboard(uid):
   url = "https://api.td-davinci.com/api/customers/" + user_doc["td-customer-id"] + "/transactions"
   headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
 
-  print(requests.get(url, headers=headers).json())
-
   transactions = (requests.get(url, headers=headers).json())["result"]
   groups = []
 
@@ -83,9 +81,6 @@ def dashboard(uid):
     db.collection(u'groups').add(data)
 
     return redirect(url_for('dashboard', uid=uid))
-
-  # print(result)
-  # result = ""
 
   print(result["groups"])
 
@@ -224,11 +219,54 @@ def group_route(group_id):
 
   return render_template("group.html", group_id = group_id, desc=desc, name=name, members=groupMembers, transactions=transactions, form=form)
 
+@app.route('/group/<string:group_id>/transfer')
+def transfer(group_id):
+  group = db.collection(u'groups').document(group_id).get().to_dict()
+  name = group["name"]
+  groupMembers = group["members"]
+  transactions = db.collection(u"groups").document(group_id).collection(u"transactions").stream()
+
+  transferUrl = "https://api.td-davinci.com/api/transfers"
+  headers = {"accept": 'application/json', "Authorization": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiM2IyZDVhMTYtYTMwMC0zY2U2LTgzZTYtOTE2OWU4OTEzYzQ1IiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI5MjVhZjU4Yi1kMmQzLTQ0MjctOGE2Zi1kM2Y1MGZjOGJlOTMifQ.RRdnWTXL8jMdlgKKQ_zAtazf78cF45FchafL4TlEA0g'}
+  
+  # get the app's account
+  appUrl = "https://api.td-davinci.com/api/accounts/self"
+  appAccountId = (requests.get(appUrl, headers=headers).json())["result"]["id"]
+  
+  for doc in db.collection("users").get():
+    user_dict = doc.to_dict()
+    user_dict["emailId"].strip()
+    if (user_dict["emailId"].strip() in [x.strip() for x in groupMembers]):
+      # Get the user's first available account
+      accountIds = []
+      accountUrl= "https://api.td-davinci.com/api/customers/" + user_dict["td-customer-id"] +"/accounts"
+      accountResults = requests.get(accountUrl, headers=headers).json()
+      for accountType in accountResults["result"]:
+        for account in accountResults["result"][accountType]:
+          accountIds.append(account["id"])
+      
+      accountId = accountIds[0]
+      netChange = group_calculate(group_id)[user_dict["emailId"]]
+
+      postBody = {}
+      postBody["amount"] = abs(netChange)
+      postBody["currency"] = "CAD"
+      postBody["receipt"] = "{ \"reason\": \"Net split cost from DT Group: " + name + "\"}"
+      if (netChange < 0):
+        postBody["fromAccountId"], postBody["toAccountId"] = accountId, appAccountId
+      else :
+        postBody["fromAccountId"], postBody["toAccountId"] = appAccountId, accountId
+
+      requests.post(transferUrl, data=postBody, headers=headers)
+
+  for transaction in transactions:
+    transaction.reference.delete()
+  return "done"
+
 # Creating category transactions
 @app.route('/group/category/transaction', methods=['POST', 'GET'])
 def create_transaction():
   if request.method == 'POST':
-    print(request.get_json())
     transaction_json = request.get_json()
     group_name = transaction_json["groupName"]
     category_name = transaction_json["category_name"]
